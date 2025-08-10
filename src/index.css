@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+	.animate-coin-tick {
+		animation: coinTick 0.8s ease-in-out;
+	}
+	@keyframes coinTick {
+		0% { transform: scale(1); }
+		20% { transform: scale(1.2); color: #facc15; }
+		40% { transform: scale(1.1); }
+		100% { transform: scale(1); }
+	}
+	.animate-glow {
+		animation: glowPulse 1.5s infinite alternate;
+	}
+	@keyframes glowPulse {
+		0% { box-shadow: 0 0 20px 5px #facc15, 0 0 40px 10px #fde68a; }
+		100% { box-shadow: 0 0 40px 10px #facc15, 0 0 60px 20px #fde68a; }
+	}
+	.animate-badge-shine {
+		animation: badgeShine 2s infinite linear;
+	}
+	@keyframes badgeShine {
+		0% { background: #f3e8ff; }
+		50% { background: #e9d5ff; box-shadow: 0 0 10px #c084fc; }
+		100% { background: #f3e8ff; }
+	}
+	.animate-leaderboard-highlight {
+		animation: leaderboardHighlight 1.5s infinite alternate;
+	}
+	@keyframes leaderboardHighlight {
+		0% { background: #bbf7d0; }
+		100% { background: #86efac; }
+	}
+}

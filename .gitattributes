@@ -1,0 +1,37 @@
+# -------------------------
+# Default line endings
+# -------------------------
+# Use LF for all text files (both repo & working tree)
+* text eol=lf
+
+# -------------------------
+# Windows-specific scripts
+# -------------------------
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+* text eol=lf
+
+
+# -------------------------
+# YAML files (explicit LF)
+# -------------------------
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# -------------------------
+# Binary files (no EOL conversion)
+# -------------------------
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.svg binary
+*.mp4 binary
+*.mov binary
+*.pdf binary
+*.zip binary
+*.gz binary
+*.tar binary
+*.7z binary

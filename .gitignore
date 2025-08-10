@@ -1,0 +1,47 @@
+# Node
+node_modules/
+
+# Build output (any package)
+dist/
+build/
+
+# Logs
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+*.tmp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+.history/
+.vs/
+
+# Misc
+*.tgz
+
+# Coverage
+coverage/
+
+# Frontend caches
+.vite/
+**/.vite/
+
+# Backend
+*.sqlite
+
+# Git
+# (Do not ignore .git or .gitignore)
+# Remove stray entry
+# nodemodu
