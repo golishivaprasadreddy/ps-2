@@ -5,11 +5,8 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd());
   const target = env.VITE_API_URL || process.env.VITE_API_URL;
 
-  if (!target) {
-    console.warn('[vite] VITE_API_URL is not set. API requests will not be proxied.');
-  }
-
   return {
+    base: './', // ensures assets work from any path
     plugins: [react()],
     resolve: {
       alias: {
@@ -34,6 +31,10 @@ export default defineConfig(({ mode }) => {
             },
           }
         : undefined,
+    },
+    build: {
+      outDir: 'dist',
+      emptyOutDir: true,
     },
   };
 });
