@@ -35,6 +35,11 @@ export default defineConfig(({ mode }) => {
     build: {
       outDir: 'dist',
       emptyOutDir: true,
+      sourcemap: false,
+      minify: 'esbuild',
+      target: 'es2020',
+      cssCodeSplit: true,
+      brotliSize: true,
     },
   };
 });

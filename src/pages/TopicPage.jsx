@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { completeCourseTopic, getCourseById, getUserProfile } from '../services/coinService';
+import { completeCourseTopic, getCourseById } from '../services/coinService';
+import { useUser } from '../context/UserContext';
 import { toast } from 'react-toastify';
 
 export default function TopicPage() {
@@ -9,8 +10,8 @@ export default function TopicPage() {
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
 
+  const { user } = useUser();
   const [course, setCourse] = useState(null);
-  const [profile, setProfile] = useState(null);
   const [isDone, setIsDone] = useState(false);
   const [loading, setLoading] = useState(true);
   const seenTopRef = useRef(false);
@@ -22,14 +23,10 @@ export default function TopicPage() {
     let mounted = true;
     async function load() {
       try {
-        const [c, p] = await Promise.all([
-          getCourseById(courseId, token),
-          userId ? getUserProfile(userId, token) : Promise.resolve({ data: {} }),
-        ]);
+        const c = await getCourseById(courseId, token);
         if (!mounted) return;
         setCourse(c.data);
-        setProfile(p.data);
-        const done = Array.isArray(p.data?.courseProgress?.[courseId]) && p.data.courseProgress[courseId].includes(index);
+        const done = Array.isArray(user?.courseProgress?.[courseId]) && user.courseProgress[courseId].includes(index);
         setIsDone(done);
       } catch (e) {
         toast.error('Failed to load topic');
@@ -39,7 +36,7 @@ export default function TopicPage() {
     }
     load();
     return () => { mounted = false; };
-  }, [courseId, index, token, userId]);
+  }, [courseId, index, token, user]);
 
   useEffect(() => {
     if (!topic || isDone || topic.type !== 'text') return;
@@ -112,40 +109,40 @@ export default function TopicPage() {
   if (!topic) return <div className="min-h-screen w-screen flex items-center justify-center text-slate-500">Topic not found</div>;
 
   return (
-    <div className="min-h-screen w-screen bg-white">
+    <div className="min-h-screen w-screen bg-gradient-to-br from-indigo-50 via-purple-100 to-pink-100">
       {/* Header (below navbar) */}
       <div className="w-screen pt-0 px-4 md:px-8">
-        <button onClick={goBack} className="text-sm text-blue-700 hover:underline">← Back to course</button>
-        <h1 className="text-2xl md:text-3xl font-extrabold text-slate-800 mt-2">{topic.title}</h1>
+        <button onClick={goBack} className="text-sm text-indigo-700 hover:underline">← Back to course</button>
+        <h1 className="text-3xl md:text-4xl font-extrabold text-indigo-700 mt-2 drop-shadow animate__animated animate__fadeIn">{topic.title}</h1>
         <div className="mt-2 flex flex-wrap items-center gap-2">
-          <div className="text-xs px-2 py-1 rounded-full inline-block bg-slate-100 text-slate-700">{topic.type}</div>
+          <div className="text-xs px-2 py-1 rounded-full inline-block bg-indigo-100 text-indigo-700">{topic.type}</div>
           {topic.estimatedMinutes ? (
             <div className="text-xs px-2 py-1 rounded-full inline-block bg-emerald-50 text-emerald-700">~{topic.estimatedMinutes} min</div>
           ) : null}
         </div>
         {topic.summary ? (<p className="mt-3 text-slate-600 max-w-5xl">{topic.summary}</p>) : null}
-        {topic.imageUrl ? (<img src={topic.imageUrl} alt="topic" className="mt-4 rounded-xl border border-slate-100 max-w-5xl" />) : null}
+        {topic.imageUrl ? (<img src={topic.imageUrl} alt="topic" className="mt-4 rounded-xl border-2 border-indigo-200 max-w-5xl shadow-lg" loading="lazy" />) : null}
       </div>
 
       {/* Main content full-width */}
       <div className="mt-4">
         {topic.type === 'video' ? (
           topic.contentUrl ? (
-            <div className="w-screen h-[calc(100vh-160px)] bg-black">
-              <video className="w-full h-full object-contain" controls src={topic.contentUrl} onTimeUpdate={onTimeUpdate} />
+            <div className="w-screen h-[calc(100vh-160px)] bg-black rounded-xl shadow-xl">
+              <video className="w-full h-full object-contain rounded-xl" controls src={topic.contentUrl} onTimeUpdate={onTimeUpdate} />
             </div>
           ) : (
             <div className="text-slate-500 px-4 md:px-8">Video content not available.</div>
           )
         ) : (
           <div className="px-4 md:px-8">
-            <div className="text-slate-700 whitespace-pre-wrap leading-relaxed text-base md:text-lg">{topic.content || 'No content provided.'}</div>
+            <div className="text-slate-700 whitespace-pre-wrap leading-relaxed text-base md:text-lg bg-white rounded-xl shadow p-6">{topic.content || 'No content provided.'}</div>
           </div>
         )}
       </div>
 
-      {/* Extras */}
-      <div className="px-4 md:px-8 max-w-6xl">
+  {/* Extras */}
+  <div className="px-4 md:px-8 max-w-6xl">
         {topic.codeSnippet ? (
           <pre className="mt-6 bg-slate-900 text-slate-100 p-4 rounded-lg overflow-auto text-sm max-w-5xl"><code>{topic.codeSnippet}</code></pre>
         ) : null}
@@ -193,7 +190,7 @@ export default function TopicPage() {
             </div>
           </div>
         ) : null}
-        <div className="mt-6 mb-8 text-sm">Status: <span className={isDone ? 'text-green-700' : 'text-slate-500'}>{isDone ? 'Completed' : 'Not completed'}</span></div>
+  <div className="mt-6 mb-8 text-sm font-bold">Status: <span className={isDone ? 'text-green-700 animate__animated animate__pulse' : 'text-slate-500'}>{isDone ? 'Completed' : 'Not completed'}</span></div>
       </div>
     </div>
   );

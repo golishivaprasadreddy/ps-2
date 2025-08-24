@@ -21,6 +21,7 @@ export default function BadgeIcon({ name, size = 64, label = true }) {
           alt={name}
           className="w-full h-full object-cover select-none rounded-md"
           draggable={false}
+          loading="lazy"
         />
       </div>
       {label && <span className="text-sm font-semibold text-slate-700">{name}</span>}

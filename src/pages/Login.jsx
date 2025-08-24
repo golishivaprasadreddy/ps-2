@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useUser } from '../context/UserContext';
 import { useNavigate } from 'react-router-dom';
 import { loginUser } from '../services/coinService';
 
@@ -6,6 +7,7 @@ const Login = () => {
 	const [form, setForm] = useState({ email: '', password: '' });
 	const [message, setMessage] = useState('');
 	const navigate = useNavigate();
+	const { refresh } = useUser();
 
 	const handleChange = e => {
 		setForm({ ...form, [e.target.name]: e.target.value });
@@ -16,14 +18,22 @@ const Login = () => {
 		setMessage('');
 		try {
 			const res = await loginUser(form);
-			if (res.data && res.data.token && res.data.user) {
-				setMessage('Login successful!');
-				// Save token and user info for dashboard usage
-				localStorage.setItem('token', res.data.token);
-				localStorage.setItem('userId', res.data.user._id);
-				setTimeout(() => navigate('/dashboard'), 1500);
+			if (res.data) {
+				// Accept either res.data.user or res.data.email
+				const user = res.data.user || res.data;
+				if (res.data.token && (user._id || user.email)) {
+					setMessage('Login successful!');
+					localStorage.setItem('token', res.data.token);
+					localStorage.setItem('userId', user._id || '');
+					localStorage.setItem('authUser', JSON.stringify({ email: user.email }));
+					window.dispatchEvent(new CustomEvent('auth:update', { detail: { email: user.email } }));
+					refresh();
+					setTimeout(() => navigate('/dashboard'), 1500);
+				} else {
+					setMessage(res.data.message || 'Invalid login response');
+				}
 			} else {
-				setMessage(res.data.message || 'Error');
+				setMessage('No response from server');
 			}
 		} catch (err) {
 			setMessage(err.response?.data?.message || 'Server error');

@@ -48,40 +48,38 @@ const Navbar = () => {
   const initials = (user?.name || 'U').split(' ').map((p) => p[0]).slice(0, 2).join('').toUpperCase();
 
   return (
-    <header className="sticky top-0 z-40 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-slate-200">
+    <header className="sticky top-0 z-40 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-indigo-200 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 md:px-8 h-16 flex items-center justify-between">
-        <Link to="/dashboard" className="text-xl font-extrabold text-blue-700">Vitaversity</Link>
+        <Link to="/dashboard" className="text-2xl font-extrabold text-white drop-shadow">Vitaversity</Link>
 
         {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-4 md:gap-6 text-sm">
-          <Link className={`${isActive('/dashboard') ? 'text-blue-700 font-semibold' : 'text-slate-600 hover:text-blue-700'} transition`} to="/dashboard">Dashboard</Link>
-          <Link className={`${isActive('/quiz') ? 'text-blue-700 font-semibold' : 'text-slate-600 hover:text-blue-700'} transition`} to="/quiz">Quiz</Link>
-          <Link className={`${isActive('/courses') ? 'text-blue-700 font-semibold' : 'text-slate-600 hover:text-blue-700'} transition`} to="/courses">Courses</Link>
-          <Link className={`${isActive('/forum') ? 'text-blue-700 font-semibold' : 'text-slate-600 hover:text-blue-700'} transition`} to="/forum">Forum</Link>
+  <nav className="hidden md:flex items-center gap-4 md:gap-6 text-lg">
+          <Link className={`${isActive('/dashboard') ? 'text-white font-bold underline' : 'text-white/80 hover:text-white'} transition`} to="/dashboard">Dashboard</Link>
+          <Link className={`${isActive('/quiz') ? 'text-white font-bold underline' : 'text-white/80 hover:text-white'} transition`} to="/quiz">Quiz</Link>
+          <Link className={`${isActive('/courses') ? 'text-white font-bold underline' : 'text-white/80 hover:text-white'} transition`} to="/courses">Courses</Link>
+          <Link className={`${isActive('/forum') ? 'text-white font-bold underline' : 'text-white/80 hover:text-white'} transition`} to="/forum">Forum</Link>
           {/* Profile menu (desktop) */}
           <div className="relative" ref={profileRef}>
             <button
               onClick={() => setProfileOpen((v) => !v)}
-              className="ml-2 inline-flex items-center gap-2 px-2 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50"
+              className="ml-2 inline-flex items-center gap-2 px-2 py-1.5 rounded-lg border-2 border-white/40 bg-white/10 hover:bg-white/20 shadow"
               aria-haspopup="menu"
               aria-expanded={profileOpen}
             >
-              <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-600 text-white text-sm font-bold">
-                {initials}
-              </span>
-              <span className="text-slate-700 text-sm font-medium max-w-[180px] truncate">{user?.name || 'Profile'}</span>
+              <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-indigo-600 text-white text-lg font-bold shadow">{initials}</span>
+              <span className="text-white text-lg font-semibold max-w-[180px] truncate">{user?.name || 'Profile'}</span>
             </button>
             {profileOpen && (
-              <div role="menu" className="absolute right-0 mt-2 w-60 rounded-lg border border-slate-200 bg-white shadow-lg p-3">
+              <div role="menu" className="absolute right-0 mt-2 w-64 rounded-xl border-2 border-indigo-200 bg-white shadow-2xl p-4 animate__animated animate__fadeIn">
                 <div className="flex items-center gap-3">
-                  <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white text-sm font-bold">{initials}</div>
+                  <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-indigo-600 text-white text-lg font-bold shadow">{initials}</div>
                   <div className="min-w-0">
-                    <div className="text-slate-900 font-semibold truncate">{user?.name || 'User'}</div>
-                    <div className="text-slate-600 text-xs truncate">{user?.email || 'email@example.com'}</div>
+                    <div className="text-indigo-900 font-bold truncate">{user?.name || 'User'}</div>
+                    <div className="text-indigo-600 text-xs truncate">{user?.email || 'email@example.com'}</div>
                   </div>
                 </div>
-                <div className="my-3 h-px bg-slate-200" />
-                <button onClick={handleLogout} className="w-full text-left px-3 py-2 rounded-md bg-slate-900 text-white text-sm hover:bg-black">Logout</button>
+                <div className="my-3 h-px bg-indigo-200" />
+                <button onClick={handleLogout} className="w-full text-left px-4 py-3 rounded-lg bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white text-lg font-bold shadow hover:bg-indigo-700 transition">Logout</button>
               </div>
             )}
           </div>
@@ -110,22 +108,22 @@ const Navbar = () => {
       </div>
 
       {/* Mobile menu panel */}
-      <div id="mobile-menu" className={`md:hidden ${menuOpen ? 'block' : 'hidden'} border-t border-slate-200 bg-white/95 backdrop-blur`}> 
-        <div className="px-4 py-3 flex flex-col gap-3 text-sm">
+      <div id="mobile-menu" className={`md:hidden ${menuOpen ? 'block' : 'hidden'} border-t border-indigo-200 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 backdrop-blur`}> 
+        <div className="px-4 py-3 flex flex-col gap-3 text-lg">
           {/* Profile summary (mobile) */}
           <div className="flex items-center gap-3">
-            <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-blue-600 text-white text-sm font-bold">{initials}</div>
+            <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-indigo-600 text-white text-lg font-bold shadow">{initials}</div>
             <div className="min-w-0">
-              <div className="text-slate-900 font-semibold truncate">{user?.name || 'User'}</div>
-              <div className="text-slate-600 text-xs truncate">{user?.email || 'email@example.com'}</div>
+              <div className="text-white font-bold truncate">{user?.name || 'User'}</div>
+              <div className="text-white/80 text-xs truncate">{user?.email || 'email@example.com'}</div>
             </div>
           </div>
-          <div className="h-px bg-slate-200" />
-          <Link className={`${isActive('/dashboard') ? 'text-blue-700 font-semibold' : 'text-slate-700'} `} to="/dashboard">Dashboard</Link>
-          <Link className={`${isActive('/quiz') ? 'text-blue-700 font-semibold' : 'text-slate-700'} `} to="/quiz">Quiz</Link>
-          <Link className={`${isActive('/courses') ? 'text-blue-700 font-semibold' : 'text-slate-700'} `} to="/courses">Courses</Link>
-          <Link className={`${isActive('/forum') ? 'text-blue-700 font-semibold' : 'text-slate-700'} `} to="/forum">Forum</Link>
-          <button onClick={handleLogout} className="mt-2 bg-slate-900 text-white px-3 py-2 rounded-lg text-sm hover:bg-black transition text-left w-fit">Logout</button>
+          <div className="h-px bg-indigo-200" />
+          <Link className={`${isActive('/dashboard') ? 'text-white font-bold underline' : 'text-white/80'} `} to="/dashboard">Dashboard</Link>
+          <Link className={`${isActive('/quiz') ? 'text-white font-bold underline' : 'text-white/80'} `} to="/quiz">Quiz</Link>
+          <Link className={`${isActive('/courses') ? 'text-white font-bold underline' : 'text-white/80'} `} to="/courses">Courses</Link>
+          <Link className={`${isActive('/forum') ? 'text-white font-bold underline' : 'text-white/80'} `} to="/forum">Forum</Link>
+          <button onClick={handleLogout} className="mt-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white px-4 py-3 rounded-lg text-lg font-bold shadow hover:bg-indigo-700 transition text-left w-fit">Logout</button>
         </div>
       </div>
     </header>

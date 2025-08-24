@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
+import { FixedSizeList as List } from 'react-window';
 import { getForumPosts, createForumPost, getForumReplies, createForumReply } from '../services/coinService';
 import { toast } from 'react-toastify';
 
@@ -52,56 +53,65 @@ const Forum = ({ userId, token }) => {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl p-8 mb-8 border border-slate-200">
-      <h2 className="text-3xl font-extrabold text-blue-600 mb-4 text-center">Group Chat</h2>
-      <div className="text-sm text-slate-500 mb-4 text-center">Messages appear below. Share your thoughts and help your peers.</div>
-      <div className="max-h-80 overflow-y-auto border border-slate-100 rounded-xl p-4 bg-slate-50">
-        <ul className="space-y-3">
-          {posts.map(p => (
-            <li key={p._id} className="flex items-start gap-3">
-              <div className="shrink-0 h-8 w-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">
-                {String(p.author || 'A').slice(0,1).toUpperCase()}
-              </div>
-              <div className="flex-1">
-                <div className="text-xs text-slate-500 mb-1">{p.author} • {new Date(p.createdAt).toLocaleString()}</div>
-                <div className="inline-block bg-white border border-slate-200 rounded-2xl px-4 py-2 text-slate-800 whitespace-pre-wrap shadow-sm">
-                  {p.content}
+    <div className="bg-gradient-to-br from-indigo-50 via-purple-100 to-pink-100 rounded-3xl shadow-2xl p-8 mb-8 border border-indigo-200 animate__animated animate__fadeIn">
+      <h2 className="text-4xl font-extrabold text-indigo-700 mb-4 text-center drop-shadow">Community Forum 💬</h2>
+      <div className="text-md text-indigo-700 mb-4 text-center font-medium">Share your thoughts, help your peers, and grow together!</div>
+  <div className="max-h-80 overflow-y-auto border border-indigo-100 rounded-xl p-4 bg-white shadow">
+        {posts.length === 0 ? (
+          <div className="text-sm text-slate-500">No messages yet. Be the first to start the chat!</div>
+        ) : (
+          <List
+            height={320}
+            itemCount={posts.length}
+            itemSize={120}
+            width={"100%"}
+          >
+            {({ index, style }) => {
+              const p = posts[index];
+              return (
+                <div style={style} key={p._id} className="flex items-start gap-3 mb-3">
+                  <div className="shrink-0 h-8 w-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold">
+                    {String(p.author || 'A').slice(0,1).toUpperCase()}
+                  </div>
+                  <div className="flex-1">
+                    <div className="text-xs text-slate-500 mb-1">{p.author} • {new Date(p.createdAt).toLocaleString()}</div>
+                    <div className="inline-block bg-white border border-slate-200 rounded-2xl px-4 py-2 text-slate-800 whitespace-pre-wrap shadow-sm">
+                      {p.content}
+                    </div>
+                    <div className="mt-2">
+                      <button onClick={() => loadReplies(p._id)} className="text-xs text-blue-600 hover:underline">{p.replies ? 'Refresh replies' : 'View replies'}</button>
+                    </div>
+                    {p.replies && (
+                      <ul className="mt-3 space-y-2">
+                        {p.replies.map(r => (
+                          <li key={r._id} className="ml-8">
+                            <div className="text-xs text-slate-500 mb-1">{r.author} • {new Date(r.createdAt).toLocaleString()}</div>
+                            <div className="inline-block bg-slate-100 border border-slate-200 rounded-2xl px-3 py-2 text-slate-800 whitespace-pre-wrap">
+                              {r.content}
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    <div className="mt-2 ml-8 flex items-center gap-2">
+                      <input
+                        className="flex-1 border border-slate-300 rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        placeholder="Write a reply..."
+                        value={replyText[p._id] || ''}
+                        onChange={e => setReplyText(prev => ({ ...prev, [p._id]: e.target.value }))}
+                      />
+                      <button onClick={() => handleReply(p._id)} className="text-xs bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700">Reply</button>
+                    </div>
+                  </div>
                 </div>
-                <div className="mt-2">
-                  <button onClick={() => loadReplies(p._id)} className="text-xs text-blue-600 hover:underline">{p.replies ? 'Refresh replies' : 'View replies'}</button>
-                </div>
-                {p.replies && (
-                  <ul className="mt-3 space-y-2">
-                    {p.replies.map(r => (
-                      <li key={r._id} className="ml-8">
-                        <div className="text-xs text-slate-500 mb-1">{r.author} • {new Date(r.createdAt).toLocaleString()}</div>
-                        <div className="inline-block bg-slate-100 border border-slate-200 rounded-2xl px-3 py-2 text-slate-800 whitespace-pre-wrap">
-                          {r.content}
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-                <div className="mt-2 ml-8 flex items-center gap-2">
-                  <input
-                    className="flex-1 border border-slate-300 rounded-lg p-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    placeholder="Write a reply..."
-                    value={replyText[p._id] || ''}
-                    onChange={e => setReplyText(prev => ({ ...prev, [p._id]: e.target.value }))}
-                  />
-                  <button onClick={() => handleReply(p._id)} className="text-xs bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700">Reply</button>
-                </div>
-              </div>
-            </li>
-          ))}
-          {posts.length === 0 && (
-            <li className="text-sm text-slate-500">No messages yet. Be the first to start the chat!</li>
-          )}
-        </ul>
+              );
+            }}
+          </List>
+        )}
       </div>
       <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-3">
         <textarea
-          className="border border-slate-300 rounded-lg p-3 text-base focus:outline-none focus:ring-2 focus:ring-blue-400 resize-none"
+          className="border-2 border-indigo-300 rounded-xl p-4 text-base focus:outline-none focus:ring-2 focus:ring-indigo-400 resize-none bg-white shadow"
           rows={3}
           placeholder="Type your message..."
           value={post}
@@ -111,7 +121,7 @@ const Forum = ({ userId, token }) => {
         <div className="flex justify-end">
           <button
             type="submit"
-            className="bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold hover:bg-blue-700 transition shadow"
+            className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:bg-indigo-700 transition animate__animated animate__pulse"
             disabled={loading}
           >
             {loading ? 'Sending...' : 'Send Message'}
