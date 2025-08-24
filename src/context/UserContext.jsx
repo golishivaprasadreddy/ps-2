@@ -33,9 +33,24 @@ export function UserProvider({ children }) {
     if (!userId || !token) return;
     try {
       const res = await getTransactionHistory(userId, token);
-      setTransactions(res.data);
+      let txs = Array.isArray(res.data) ? res.data : [];
+      // Add registration bonus if not present
+      const hasRegistrationBonus = txs.some(tx => tx.reason && tx.reason.toLowerCase().includes('registration'));
+      if (!hasRegistrationBonus && user) {
+        txs = [
+          {
+            _id: 'registration-bonus',
+            type: 'credit',
+            amount: 100,
+            reason: 'Registration Bonus',
+            createdAt: user.createdAt || new Date(),
+          },
+          ...txs
+        ];
+      }
+      setTransactions(txs);
     } catch {}
-  }, [userId, token]);
+  }, [userId, token, user]);
 
   useEffect(() => {
     fetchUser();

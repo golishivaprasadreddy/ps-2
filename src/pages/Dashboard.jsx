@@ -205,23 +205,27 @@ const Dashboard = () => {
         <div className="w-full py-6">
           <div className="text-xl font-extrabold text-green-600 mb-4 drop-shadow">Transaction History</div>
           <div className="bg-gradient-to-r from-green-100 via-yellow-100 to-pink-100 rounded-2xl shadow-lg p-4">
-            <List
-              height={256}
-              itemCount={transactions.length}
-              itemSize={44}
-              width={"100%"}
-            >
-              {({ index, style }) => {
-                const tx = transactions[index];
-                return (
-                  <div style={style} key={tx._id} className={`flex items-center gap-3 py-2 px-4 rounded-xl font-semibold text-lg ${tx.type === "credit" ? "bg-green-50 text-green-700" : "bg-red-100 text-red-700"}`}>
-                    <span className="font-bold">{tx.type === "credit" ? "+" : "-"}{tx.amount}</span>
-                    <span className="truncate">{tx.reason}</span>
-                    <span className="ml-auto text-xs text-gray-500">{new Date(tx.createdAt).toLocaleDateString()}</span>
-                  </div>
-                );
-              }}
-            </List>
+            {transactions && transactions.length > 0 ? (
+              <List
+                height={256}
+                itemCount={transactions.length}
+                itemSize={44}
+                width={"100%"}
+              >
+                {({ index, style }) => {
+                  const tx = transactions[index];
+                  return (
+                    <div style={style} key={tx._id} className={`flex items-center gap-3 py-2 px-4 rounded-xl font-semibold text-lg ${tx.type === "credit" ? "bg-green-50 text-green-700" : "bg-red-100 text-red-700"}`}>
+                      <span className="font-bold">{tx.type === "credit" ? "+" : "-"}{tx.amount}</span>
+                      <span className="truncate">{tx.reason}</span>
+                      <span className="ml-auto text-xs text-gray-500">{new Date(tx.createdAt).toLocaleDateString()}</span>
+                    </div>
+                  );
+                }}
+              </List>
+            ) : (
+              <div className="text-center text-slate-500 py-8 text-lg font-semibold">No transactions yet. Earn coins by completing quizzes, courses, or forum activities!</div>
+            )}
           </div>
         </div>
 
