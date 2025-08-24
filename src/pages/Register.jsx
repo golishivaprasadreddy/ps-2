@@ -52,10 +52,7 @@ const Register = () => {
           Create Your Account 🚀
         </h1>
 
-        <div className="mb-4 text-center text-xs text-slate-500">
-          <span className="font-semibold">API Endpoint:</span>{' '}
-          <span className="bg-slate-100 px-2 py-1 rounded">/api/auth/register</span>
-        </div>
+      
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-6">
           {/* Full Name */}
